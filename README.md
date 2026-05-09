@@ -1,6 +1,11 @@
 Este repositorio lo voy a estar utilizando de manera conjunta para afianzar nuestros conocimientos con aplicaciones.
 
 # 🏀 BasquetStore API
+![Java](https://img.shields.io/badge/Java-17%2B-blue?logo=java)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen?logo=springboot)
+![MongoDB](https://img.shields.io/badge/MongoDB-7.x-green?logo=mongodb)
+![JWT](https://img.shields.io/badge/JWT-autenticaci%C3%B3n-orange?logo=jsonwebtokens)
+![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203.0-success?logo=swagger)
 
 API RESTful para gestión de venta de zapatillas de básquet, desarrollada con **Spring Boot** y **MongoDB**.  
 Incluye autenticación JWT, roles de usuario (USER/ADMIN), carrito de compras, gestión de pedidos con estados, control de stock por talle y endpoints paginados/filtrados.
