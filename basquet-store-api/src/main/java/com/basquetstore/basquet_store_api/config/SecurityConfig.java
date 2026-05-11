@@ -19,6 +19,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -31,7 +32,7 @@ public class SecurityConfig {
                 // Configurar acceso a endpoints
                 .authorizeHttpRequests(auth -> auth
                         // Endpoints públicos
-                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/api/debug/**").permitAll()
                         .requestMatchers("/api/shoes/**").permitAll()
                         // Endpoints de carrito y pedidos requieren autenticación
                         .requestMatchers("/api/cart/**", "/api/orders/**").authenticated()
@@ -42,5 +43,6 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }
 

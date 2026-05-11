@@ -9,8 +9,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Getter@Setter
 @Document(collection = "users")
 public class User {
@@ -44,5 +42,16 @@ public class User {
     @Field("enabled")
     private boolean enabled;
 
+    public User(){}
 
+    public User(String username, String email, String password, String name, String address, String phone, Role role, boolean enabled){
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.role = role;
+        this.enabled = enabled;
+    }
 }

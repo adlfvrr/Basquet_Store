@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "shoes")
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Getter @Setter
 public class Shoe {
 
@@ -33,4 +31,14 @@ public class Shoe {
     @Field("variants")
     private List<SizeVariant> variants = new ArrayList<>();
 
+    public Shoe(){}
+
+    public Shoe(String brand, String model, String description, BigDecimal price, String imageUrl, List<SizeVariant> variants){
+        this.brand = brand;
+        this.model = model;
+        this. description = description;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.variants = variants;
+    }
 }

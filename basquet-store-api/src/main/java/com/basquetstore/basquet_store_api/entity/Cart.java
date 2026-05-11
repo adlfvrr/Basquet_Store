@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "carts")
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Getter @Setter
 public class Cart {
 
@@ -23,5 +21,12 @@ public class Cart {
     private String userId;
     @Field("items")
     private List<CartItem> items = new ArrayList<>();
+
+    public Cart(){}
+
+    public Cart(String userId, List<CartItem> items){
+        this.userId = userId;
+        this.items = items;
+    }
 
 }

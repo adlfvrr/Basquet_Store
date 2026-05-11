@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "orders")
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Getter @Setter
 public class Order {
 
@@ -29,4 +27,12 @@ public class Order {
     @Field("items")
     private List<OrderItem> items = new ArrayList<>();
 
+    public Order(){}
+
+    public Order(String userId, Instant date, OrderStatus status, List<OrderItem> items){
+        this.userId = userId;
+        this.date = date;
+        this.status = status;
+        this.items = items;
+    }
 }
