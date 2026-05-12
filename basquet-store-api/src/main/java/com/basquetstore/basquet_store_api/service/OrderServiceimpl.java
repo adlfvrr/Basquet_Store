@@ -60,21 +60,23 @@ public class OrderServiceimpl implements OrderService {
     public OrderResponse createOrder(String userId) {
         //Creamos el carrito y verificamos que no esté vacío
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(()-> new BadRequestException("El carrito se encuentra vacío."));
-        if(cart.getItems().isEmpty()){
+                .orElseThrow(() -> new BadRequestException("El carrito se encuentra vacío."));
+        if (cart.getItems().isEmpty()) {
             throw new BadRequestException("El carrito se encuentra vacío.");
         }
 
         //Validamos stock
         List<OrderItem> orderItems = new ArrayList<>();
-        for(CartItem cartItem : cart.getItems()){
+        for (CartItem cartItem : cart.getItems()) {
             Shoe shoe = shoeRepository.findById(cartItem.getShoeId())
-                    .orElseThrow(()-> new ResourceNotFoundException("Producto no encontrado."));
+                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado."));
+
             SizeVariant variant = shoe.getVariants().stream()
                     .filter(v -> v.getSize() == cartItem.getSize())
                     .findFirst()
                     .orElseThrow(() -> new InsufficientStockException("Talle sin stock."));
-            if(variant.getStock() < cartItem.getQuantity()){
+
+            if (variant.getStock() < cartItem.getQuantity()) {
                 throw new InsufficientStockException("Stock insuficiente para " + shoe.getModel() + " talle: " + cartItem.getSize());
             }
 
@@ -106,11 +108,12 @@ public class OrderServiceimpl implements OrderService {
 
     @Override
     public Page<OrderResponse> findOrders(String userId, OrderStatus status, Pageable pageable) {
-        if(status != null && userId != null) return orderRepository.findByUserIdAndStatus(userId, status, pageable).map(this::mapToResponse);
+        if (status != null && userId != null)
+            return orderRepository.findByUserIdAndStatus(userId, status, pageable).map(this::mapToResponse);
 
-        if(userId != null) return orderRepository.findByUserId(userId, pageable).map(this::mapToResponse);
+        if (userId != null) return orderRepository.findByUserId(userId, pageable).map(this::mapToResponse);
 
-        if(status != null) return orderRepository.findByStatus(status, pageable).map(this::mapToResponse);
+        if (status != null) return orderRepository.findByStatus(status, pageable).map(this::mapToResponse);
 
         return orderRepository.findAll(pageable).map(this::mapToResponse);
     }
@@ -118,7 +121,7 @@ public class OrderServiceimpl implements OrderService {
     @Override
     public OrderResponse findById(String userId, String orderId) {
         //El userId lo utilizaremos más adelante, donde se controlará según el rol (admin o usuario)
-        return mapToResponse(orderRepository.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Pedido no encontrado.")));
+        return mapToResponse(orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado.")));
     }
 
     @Override
@@ -129,13 +132,14 @@ public class OrderServiceimpl implements OrderService {
         OrderStatus newStatus = request.getStatus();
 
         //Validamos los pases de estados.
-        if(order.getStatus() == OrderStatus.CANCELADO) throw new StatusUpdateException("No se puede cambiar un pedido cancelado.");
-        if(order.getStatus() == OrderStatus.PENDIENTE && (newStatus != OrderStatus.CONFIRMADO && newStatus != OrderStatus.CANCELADO)) throw new StatusUpdateException("Transición no permitida.");
-        if(order.getStatus() == OrderStatus.CONFIRMADO && newStatus == OrderStatus.CANCELADO){
+        if (newStatus != OrderStatus.CANCELADO && newStatus != OrderStatus.CONFIRMADO)
+            throw new StatusUpdateException("Transición no permitida: No se reconoce el estado, o bien no puede volver a ser 'PENDIENTE'");
+
+        if (order.getStatus() == OrderStatus.CANCELADO)
+            throw new StatusUpdateException("Transición no permitida: La orden ya se encuentra cancelada");
+
+        if (newStatus == OrderStatus.CANCELADO) {
             returnStock(order);
-        }
-        else{
-            throw new StatusUpdateException("Transición no permitida.");
         }
 
         order.setStatus(newStatus);

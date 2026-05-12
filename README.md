@@ -1,5 +1,3 @@
-Este repositorio lo voy a estar utilizando de manera conjunta para afianzar nuestros conocimientos con aplicaciones.
-
 # 🏀 BasquetStore API
 ![Java](https://img.shields.io/badge/Java-17%2B-blue?logo=java)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen?logo=springboot)
@@ -16,7 +14,7 @@ Incluye autenticación JWT, roles de usuario (USER/ADMIN), carrito de compras, g
 - Spring Data MongoDB
 - Spring Security + JWT (JJWT)
 - MongoDB
-- Swagger / OpenAPI 3
+- Swagger / OpenAPI 3 / ThunderClient
 - Maven
 
 ## ✨ Funcionalidades
@@ -42,6 +40,7 @@ El proyecto sigue una arquitectura en capas:
 - **dto**: objetos de transferencia (request/response)
 - **security**: JWT y filtros de autenticación
 - **exception**: manejo centralizado de excepciones
+- **config**: configuración de rutas y carga inicial de datos.
 
 ## 📐 Modelo de datos (UML)
 ![Diagrama UML](basquet-store-api/docs/uml-diagram.jpg)
@@ -69,9 +68,6 @@ El proyecto sigue una arquitectura en capas:
 3. Ejecutar `./mvnw spring-boot:run`
 4. Acceder a Swagger: `http://localhost:8080/swagger-ui.html`
 
-## 📬 Colección de Postman (opcional)
-Incluimos una colección para probar los endpoints rápidamente: `docs/postman_collection.json`
-
 ## 👥 Autores
 - adlfvrr   – Backend & API
 - iFaustoo  – Frontend
@@ -79,3 +75,6 @@ Incluimos una colección para probar los endpoints rápidamente: `docs/postman_c
 ## 🔮 Próximos pasos
 - Migración a .NET (previsto como práctica futura)
 - Integración con frontend independiente
+____________________________________________________
+Este repositorio lo voy a estar utilizando de manera conjunta para afianzar nuestros conocimientos con aplicaciones.
+____________________________________________________

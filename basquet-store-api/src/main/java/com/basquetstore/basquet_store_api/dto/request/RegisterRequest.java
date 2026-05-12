@@ -31,7 +31,7 @@ public class RegisterRequest {
     private String name;
 
     @NotBlank(message = "El número de teléfono es obligatorio.")
-    @Pattern(regexp = "^\\d{10}$\n", message = "Formato de teléfono inválido.")
+    @Pattern(regexp = "^\\d{10}$", message = "Formato de teléfono inválido.")
     private String phone;
 
     @NotBlank(message = "La dirección es obligatoria.")

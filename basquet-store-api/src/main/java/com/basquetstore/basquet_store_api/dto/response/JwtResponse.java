@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 public class JwtResponse {
 
-    private String email;
     private String token;
+    private String email;
     private String role;
     private final String type = "Bearer";
 }

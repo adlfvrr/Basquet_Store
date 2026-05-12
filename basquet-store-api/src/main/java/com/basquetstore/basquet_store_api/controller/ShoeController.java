@@ -22,7 +22,14 @@ public class ShoeController {
             @RequestParam(required = false) Integer size,
             @PageableDefault(size = 4)
             Pageable pageable){
-        return ResponseEntity.ok(shoeService.findAll(brand, size, pageable));
+
+            if(brand != null) {
+                String brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
+                return ResponseEntity.ok(shoeService.findAll(brandCapitalize, size, pageable));
+
+            }
+            return ResponseEntity.ok(shoeService.findAll(brand, size, pageable));
+
         /*
         Funcionamiento:
         findAll lista por Page 4 zapatillas (PageableDefault), funciona:
