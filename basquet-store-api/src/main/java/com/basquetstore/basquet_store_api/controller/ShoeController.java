@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class ShoeController {
 
+    //Controlador de zapatillas
+
     private final ShoeService shoeService;
 
     @GetMapping

@@ -20,9 +20,12 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    //Creamos un filtrado de usuarios Autenticados
+
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
 
+    //Para entender mejor, visita mi repositorio de register-login-api, todo está detallado
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

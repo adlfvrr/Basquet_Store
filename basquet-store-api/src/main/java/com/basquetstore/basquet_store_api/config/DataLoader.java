@@ -20,6 +20,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @AllArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
+    //Cargamos datos (en caso que no existan) dentro de la bdd. Creamos un usuario normal, un admin e insertamos las zapatillas de forma predeterminada
+
     private final ShoeRepository shoeRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

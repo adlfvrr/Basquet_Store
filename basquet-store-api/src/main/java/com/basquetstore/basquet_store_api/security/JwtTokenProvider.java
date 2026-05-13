@@ -14,17 +14,19 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+    //Creamos un proveedor de token para cada usuario
+
     private final SecretKey secretKey;
 
     private final long expiration;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secret,
-                            @Value("${jwt.expiration}") long expiration){
+                            @Value("${jwt.expiration}") long expiration) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiration = expiration;
     }
 
-    public String generateToken(String username, String role){
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .subject(username)
                 .claim("role", role)
@@ -35,7 +37,7 @@ public class JwtTokenProvider {
     }
 
     //Claims => Es el cuerpo del Token. Podríamos decir que, a través del token, obtenemos un "objeto" Token.
-    private Claims parseClaims(String token){
+    private Claims parseClaims(String token) {
         return Jwts.parser()
                 .verifyWith(this.secretKey)
                 .build()
@@ -43,13 +45,15 @@ public class JwtTokenProvider {
                 .getPayload();
     }
 
-    public String getEmailFromToken(String token){
+    public String getEmailFromToken(String token) {
         return parseClaims(token).getSubject();
     }
 
-    public String getRoleFromToken(String token){
+    /* Método no utilizado, por ahora...
+    public String getRoleFromToken(String token) {
         return parseClaims(token).get("role", String.class);
     }
+     */
 
     //De esta manera, validamos el token según la firma y la expiración.
     public boolean validateToken(String token) {
@@ -60,6 +64,5 @@ public class JwtTokenProvider {
             return false;
         }
     }
-
 
 }

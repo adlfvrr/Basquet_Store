@@ -17,12 +17,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class SecurityConfig {
 
+    //Configuración de seguridad para las rutas
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    //Asignamos que tipo de encriptación de contraseñas utilizaremos dentro de nuestro Spring Security
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

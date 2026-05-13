@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter @Setter
 public class SizeVariant {
 
+    //SizeVariant permite guardar dentro de cada shoe su talle y stock de manera separada.
     private int size;
     private int stock;
 

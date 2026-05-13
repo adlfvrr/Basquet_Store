@@ -15,8 +15,12 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+    //CustomUserDetailsService nos permite trabajar con usuarios sin necesidad de implementar UserDetails en User.
+    //Lo que hace, es crear una entidad que se pueda comunicar con Spring Security (UserDetails), lo que separa responsabilidades
+
     private final UserRepository userRepository;
 
+    //loadUserByUsername permite contactar con la bdd y, a partir de ello, si existe en ella, retornamos un UserDetails entendible para Spring
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));

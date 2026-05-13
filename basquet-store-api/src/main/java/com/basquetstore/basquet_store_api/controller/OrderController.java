@@ -26,6 +26,8 @@ import java.security.Principal;
 @AllArgsConstructor
 public class OrderController {
 
+    //Controlador de pedidos
+
     private final OrderService orderService;
     private final UserRepository userRepository;
 
@@ -36,6 +38,8 @@ public class OrderController {
         return user.getId();
     }
 
+    //Este método permite al admin ver los pedidos de todos
+    //Cuando se requiere listar los pedidos, si principal detecta que hay un usario, retornará su Id. Si hay un admin, retornará null
     private String getUserIdOptional(Principal principal) {
         if (principal == null) return null;
         return getUserIdPrincipal(principal);
@@ -50,11 +54,13 @@ public class OrderController {
     public ResponseEntity<Page<OrderResponse>> listOrders(Principal principal,
                                                           @RequestParam(required = false) OrderStatus status,
                                                           @PageableDefault(size = 4) Pageable pageable) {
+        //Extraemos si dentro del ContextHolder, hay autenticación de admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) { //Si el usuario es admin (userid null), puede ver todas
             return ResponseEntity.ok(orderService.findOrders(null, status, pageable));
         } else {
+            //Lo normal, el userId no es null y verá las suyas
             return ResponseEntity.ok(orderService.findOrders(getUserIdPrincipal(principal), status, pageable));
         }
     }
@@ -62,6 +68,7 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrder(@PathVariable String id, Principal principal){
         OrderResponse order = orderService.findById(getUserIdOptional(principal), id);
+        //Lo mismo que antes, solo que ahora es para buscar un pedido en particular.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")) &&
         !order.getUserId().equals(getUserIdPrincipal(principal))){

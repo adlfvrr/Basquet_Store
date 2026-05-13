@@ -15,10 +15,13 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-public class ShoeServiceImpl implements ShoeService{
+public class ShoeServiceImpl implements ShoeService {
+
+    //Servicio de zapatillas
 
     private final ShoeRepository shoeRepository;
 
+    //Metodo auxiliar
     private ShoeResponse mapToResponse(Shoe shoe) {
         return new ShoeResponse(
                 shoe.getId(),
@@ -33,8 +36,10 @@ public class ShoeServiceImpl implements ShoeService{
         );
     }
 
-    public Page<ShoeResponse> findAll(String brand, Integer size, Pageable pageable){
+    public Page<ShoeResponse> findAll(String brand, Integer size, Pageable pageable) {
         Page<Shoe> shoePage;
+
+        //Mediante estos condicionales, según los datos que se reciban de la ruta, se mostrarán de diferente manera las zapatillas
 
         if (brand != null && size != null) {
             shoePage = shoeRepository.findByBrandAndSize(brand, size, pageable);

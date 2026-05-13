@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService{
 
+    //Servicio de autenticación.
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -27,19 +29,21 @@ public class AuthServiceImpl implements AuthService{
             throw new BadCredentialsException("El mail ya se encuentra registrado.");
         }
 
+        //Si no existe, creamos el usuario
+
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(passwordEncoder.encode(request.getPassword())); //Importante, siempre guardar la contraseña en la bdd de manera encriptada, evitando exposiciones.
         user.setName(request.getName());
         user.setAddress(request.getAddress());
         user.setPhone(request.getPhone());
-        user.setRole(Role.USUARIO);
+        user.setRole(Role.USUARIO); //Todos los usuarios registrados serán USUARIO, sin poder crear Admin
         user.setEnabled(true);
 
         userRepository.save(user);
 
-        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getRole().name());
+        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getRole().name()); //Le creamos el token, guardando su mail y rol
         return new JwtResponse(token, user.getEmail(), user.getRole().name());
     }
 

@@ -24,9 +24,12 @@ import java.util.stream.Collectors;
 @Service
 public class CartServiceImpl implements CartService{
 
+    //Servicio de carrito
+
     private final CartRepository cartRepository;
     private final ShoeRepository shoeRepository;
 
+    //Método auxiliar
     private CartResponse mapToResponse(Cart cart) {
         return new CartResponse(
                 cart.getId(),
@@ -37,6 +40,7 @@ public class CartServiceImpl implements CartService{
         );
     }
 
+    //Método auxiliar
     private Cart getOrCreateCart(String userId) {
         return cartRepository.findByUserId(userId)
                 .orElseGet(() -> {
@@ -61,7 +65,7 @@ public class CartServiceImpl implements CartService{
         Shoe shoe = shoeRepository.findById(request.getShoeId())
                 .orElseThrow(() -> new ResourceNotFoundException("La zapatilla no fue encontrada."));
         //Validamos existencia de talle
-        SizeVariant variant = shoe.getVariants().stream()
+        SizeVariant variant = shoe.getVariants().stream() //De la zapatilla, extraemos sus SizeVariant, para comprobar si hay stock y talle coincidentes
                 .filter(v -> v.getSize() == request.getSize())
                 .findFirst()
                 .orElseThrow(() -> new InsufficientStockException("Stock de talle no encontrado."));
@@ -93,7 +97,7 @@ public class CartServiceImpl implements CartService{
         Cart cart = getOrCreateCart(userId);
         //Buscamos el item a actualizar
         CartItem item = cart.getItems().stream()
-                .filter(i -> i.getShoeId().equals(shoeId) && i.getSize() == size)
+                .filter(i -> i.getShoeId().equals(shoeId) && i.getSize() == size) //Comprobamos coincidencia de id de zapatilla y talle con el item
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException("Item no encontrado en el carrito."));
 

@@ -26,10 +26,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrderServiceimpl implements OrderService {
 
+    //Servicio de pedidos
+
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final ShoeRepository shoeRepository;
 
+    //Método auxiliar
     private void returnStock(Order order) {
         for (OrderItem item : order.getItems()) {
             Shoe shoe = shoeRepository.findById(item.getShoeId()).orElse(null);
@@ -43,6 +46,7 @@ public class OrderServiceimpl implements OrderService {
         }
     }
 
+    //Método auxiliar
     private OrderResponse mapToResponse(Order order) {
         return new OrderResponse(
                 order.getId(),
@@ -56,6 +60,7 @@ public class OrderServiceimpl implements OrderService {
     }
 
     @Transactional
+    //Transactional indica que, en caso de que se produzca una excepción, se reviertan TODAS las acciones (Evitando errores de actualizaciones)
     @Override
     public OrderResponse createOrder(String userId) {
         //Creamos el carrito y verificamos que no esté vacío
@@ -68,15 +73,15 @@ public class OrderServiceimpl implements OrderService {
         //Validamos stock
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cart.getItems()) {
-            Shoe shoe = shoeRepository.findById(cartItem.getShoeId())
+            Shoe shoe = shoeRepository.findById(cartItem.getShoeId()) //Buscamos el objeto zapatilla dentro de la bdd
                     .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado."));
 
-            SizeVariant variant = shoe.getVariants().stream()
-                    .filter(v -> v.getSize() == cartItem.getSize())
+            SizeVariant variant = shoe.getVariants().stream()//Extraemos los SizeVariant de la misma
+                    .filter(v -> v.getSize() == cartItem.getSize()) //Buscamos el talle solicitado
                     .findFirst()
                     .orElseThrow(() -> new InsufficientStockException("Talle sin stock."));
 
-            if (variant.getStock() < cartItem.getQuantity()) {
+            if (variant.getStock() < cartItem.getQuantity()) { //Comprobamos que la cantidad deseada no supere el stock real
                 throw new InsufficientStockException("Stock insuficiente para " + shoe.getModel() + " talle: " + cartItem.getSize());
             }
 
@@ -93,21 +98,22 @@ public class OrderServiceimpl implements OrderService {
 
             shoeRepository.save(shoe);
         }
-        //Creamos orden
+        //Creamos pedido
         Order order = new Order();
         order.setUserId(userId);
         order.setDate(Instant.now());
-        order.setStatus(OrderStatus.PENDIENTE);
+        order.setStatus(OrderStatus.PENDIENTE); //Automáticamente asignamos el pedido como PENDIENTE
         order.setItems(orderItems);
         orderRepository.save(order);
 
-        cartRepository.deleteByUserId(userId);
+        cartRepository.deleteByUserId(userId); //Eliminamos el carrito del usuario, pues ya hizo el pedido
 
         return mapToResponse(order);
     }
 
     @Override
     public Page<OrderResponse> findOrders(String userId, OrderStatus status, Pageable pageable) {
+        //Buscamos los pedidos según los datos que recibamos del controlador (status e id de usuario)
         if (status != null && userId != null)
             return orderRepository.findByUserIdAndStatus(userId, status, pageable).map(this::mapToResponse);
 
@@ -132,12 +138,16 @@ public class OrderServiceimpl implements OrderService {
         OrderStatus newStatus = request.getStatus();
 
         //Validamos los pases de estados.
+
+        //No se reconocerá otro estado, y un pedido (ya sea confirmado o cancelado) no puede volver a ser pendiente
         if (newStatus != OrderStatus.CANCELADO && newStatus != OrderStatus.CONFIRMADO)
             throw new StatusUpdateException("Transición no permitida: No se reconoce el estado, o bien no puede volver a ser 'PENDIENTE'");
 
+        //No se puede cambiar el estado de un pedido cancelado.
         if (order.getStatus() == OrderStatus.CANCELADO)
             throw new StatusUpdateException("Transición no permitida: La orden ya se encuentra cancelada");
 
+        //Si se cancela un pedido, ya sea confirmado o pendiente, se retorna el stock
         if (newStatus == OrderStatus.CANCELADO) {
             returnStock(order);
         }

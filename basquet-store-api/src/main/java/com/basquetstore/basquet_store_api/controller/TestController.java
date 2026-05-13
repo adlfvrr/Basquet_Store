@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
+    //Sirve para conocer a que bdd estamos conectados
+
     private final MongoTemplate mongoTemplate;
 
     public TestController(MongoTemplate mongoTemplate) {

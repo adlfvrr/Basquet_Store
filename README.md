@@ -43,6 +43,7 @@ El proyecto sigue una arquitectura en capas:
 - **config**: configuración de rutas y carga inicial de datos.
 
 ## 📐 Modelo de datos (UML)
+- Cabe aclarar que este UML está dado solo para demostrar las ENTIDADES que participarán en el proyecto. Más adelante se incluirán los repositorios y sus conexiones con servicios
 ![Diagrama UML](basquet-store-api/docs/uml-diagram.jpg)
 
 ## 📡 Endpoints principales (ver Swagger para detalle)

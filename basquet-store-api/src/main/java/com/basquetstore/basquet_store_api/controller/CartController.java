@@ -19,6 +19,8 @@ import java.security.Principal;
 @AllArgsConstructor
 public class CartController {
 
+    //Controlador de carrito
+
     private final CartService cartService;
     private final UserRepository userRepository;
 
@@ -43,6 +45,7 @@ public class CartController {
         return ResponseEntity.ok(cartService.addItem(user.getId(), request));
     }
 
+    //Permite, dentro del carrito, actualizar la cantidad que deseamos
     @PutMapping("/items/{shoeId}/{size}")
     public ResponseEntity<CartResponse> updateitemQuantity(Principal principal,
                                                            @PathVariable String shoeId,
