@@ -74,6 +74,10 @@ El proyecto sigue una arquitectura en capas:
 - iFaustoo  – Frontend
 
 ## 🔮 Próximos pasos
+- Incluir introducción de nuevos productos por parte de un ADMIN.
+- A la hora de realizar un pedido, devolver detalles de pedido (Hora de realización - Dirección - Ciudad - Precio - Envío)
+
+--- A LARGO PLAZO ---
 - Migración a .NET (previsto como práctica futura)
 - Integración con frontend independiente
 ____________________________________________________

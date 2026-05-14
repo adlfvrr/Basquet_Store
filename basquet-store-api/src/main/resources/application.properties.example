@@ -1,0 +1,8 @@
+spring.application.name=basquet-store-api
+
+spring.data.mongodb.uri=mongodb://localhost:27017/your_bd //ruta localhost predeterminada
+spring.data.mongodb.auto-index-creation=true
+
+#JWT
+jwt.secret= //Inserta tu token, el cual NO DEBES EXPONER EN NINGUN LADO. Para buenas prácticas, se incluye en un .env, junto a la URI de MongoDB
+jwt.expiration = //Expiración de tu token. Generalmente es en milisegundos
