@@ -77,11 +77,12 @@ El proyecto sigue una arquitectura en capas:
 
 ## 🔮 Próximos pasos
 ✔️- Incluir introducción de nuevos productos al catálogo por parte de un ADMIN. 
+
 ✔️- A la hora de realizar un pedido, devolver detalles de pedido (Dirección - Tiempo aprox de envío - Precio de envío - Precio total)
 
 --- A LARGO PLAZO ---
-- Migración a .NET (previsto como práctica futura)
 - Integración con frontend independiente
+- Migración a .NET (previsto como práctica futura)
 ____________________________________________________
 Este repositorio lo voy a estar utilizando de manera conjunta para afianzar nuestros conocimientos con aplicaciones.
 ____________________________________________________
