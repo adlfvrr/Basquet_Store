@@ -56,6 +56,8 @@ El proyecto sigue una arquitectura en capas:
 | POST | /api/orders | Crear pedido desde carrito | USER |
 | GET | /api/orders | Listar pedidos (filtro por estado) | USER/ADMIN |
 | PUT | /api/orders/{id}/status | Cambiar estado de pedido | ADMIN |
+| POST | /api/shoes | Agregar nuevas zapatillas al catálogo | ADMIN | --Nueva implementación
+
 
 ## 🔧 Configuración y ejecución
 ### Requisitos previos
