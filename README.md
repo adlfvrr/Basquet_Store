@@ -56,7 +56,7 @@ El proyecto sigue una arquitectura en capas:
 | POST | /api/orders | Crear pedido desde carrito | USER |
 | GET | /api/orders | Listar pedidos (filtro por estado) | USER/ADMIN |
 | PUT | /api/orders/{id}/status | Cambiar estado de pedido | ADMIN |
-| POST | /api/shoes | Agregar nuevas zapatillas al catálogo | ADMIN | --Nueva implementación
+| POST | /api/shoes | Agregar nuevas zapatillas al catálogo | ADMIN | 
 
 
 ## 🔧 Configuración y ejecución
@@ -76,8 +76,8 @@ El proyecto sigue una arquitectura en capas:
 - iFaustoo  – Frontend
 
 ## 🔮 Próximos pasos
-✔️- Incluir introducción de nuevos productos por parte de un ADMIN. 
-- A la hora de realizar un pedido, devolver detalles de pedido (Hora de realización - Dirección - Ciudad - Precio - Envío)
+✔️- Incluir introducción de nuevos productos al catálogo por parte de un ADMIN. 
+✔️- A la hora de realizar un pedido, devolver detalles de pedido (Dirección - Tiempo aprox de envío - Precio de envío - Precio total)
 
 --- A LARGO PLAZO ---
 - Migración a .NET (previsto como práctica futura)

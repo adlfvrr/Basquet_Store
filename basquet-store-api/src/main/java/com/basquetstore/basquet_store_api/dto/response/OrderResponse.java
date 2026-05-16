@@ -19,5 +19,6 @@ public class OrderResponse {
     private Instant date;
     private OrderStatus status;
     private List<OrderItemResponse> items;
+    private OrderDetailsResponse details;
 
 }

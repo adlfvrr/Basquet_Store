@@ -26,13 +26,16 @@ public class Order {
     private OrderStatus status;
     @Field("items")
     private List<OrderItem> items = new ArrayList<>();
+    @Field("details")
+    private OrderDetails orderDetails; //Guardamos detalles del envío como dirección, precio, llegada aproximada del pedido, etc
 
     public Order(){}
 
-    public Order(String userId, Instant date, OrderStatus status, List<OrderItem> items){
+    public Order(String userId, Instant date, OrderStatus status, List<OrderItem> items, OrderDetails details){
         this.userId = userId;
         this.date = date;
         this.status = status;
         this.items = items;
+        this.orderDetails = details;
     }
 }

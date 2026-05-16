@@ -1,6 +1,7 @@
 package com.basquetstore.basquet_store_api.service;
 
 import com.basquetstore.basquet_store_api.dto.request.UpdateOrderStatusRequest;
+import com.basquetstore.basquet_store_api.dto.response.OrderDetailsResponse;
 import com.basquetstore.basquet_store_api.dto.response.OrderItemResponse;
 import com.basquetstore.basquet_store_api.dto.response.OrderResponse;
 import com.basquetstore.basquet_store_api.entity.*;
@@ -11,14 +12,17 @@ import com.basquetstore.basquet_store_api.exception.StatusUpdateException;
 import com.basquetstore.basquet_store_api.repository.CartRepository;
 import com.basquetstore.basquet_store_api.repository.OrderRepository;
 import com.basquetstore.basquet_store_api.repository.ShoeRepository;
+import com.basquetstore.basquet_store_api.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +35,12 @@ public class OrderServiceimpl implements OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final ShoeRepository shoeRepository;
+    //Agregamos repositorio de usuario para acceder a sus datos para el armado de pedidos
+    private final UserRepository userRepository;
+
+    //Por el momento, el precio de envío y tiempo aproximado (7 dias) estarán puestos por default
+    private final Long shippingTime = 604800000L;
+    private final BigDecimal shippingPrice = BigDecimal.valueOf(65);
 
     //Método auxiliar
     private void returnStock(Order order) {
@@ -48,6 +58,15 @@ public class OrderServiceimpl implements OrderService {
 
     //Método auxiliar
     private OrderResponse mapToResponse(Order order) {
+
+        User user = userRepository.findById(order.getUserId()).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        //Armamos el response con los datos del pedido y usuario
+        OrderDetailsResponse detailsResponse = new OrderDetailsResponse(order.getOrderDetails().getDeliverDate(),
+                order.getOrderDetails().getAddress(),
+                order.getOrderDetails().getShippingPrice(),
+                order.getOrderDetails().getTotalPrice());
+
         return new OrderResponse(
                 order.getId(),
                 order.getUserId(),
@@ -55,7 +74,9 @@ public class OrderServiceimpl implements OrderService {
                 order.getStatus(),
                 order.getItems().stream()
                         .map(item -> new OrderItemResponse(item.getShoeId(), item.getSize(), item.getQuantity(), item.getUnitPrice()))
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                //Asignamos el orderDetails
+                detailsResponse
         );
     }
 
@@ -98,12 +119,34 @@ public class OrderServiceimpl implements OrderService {
 
             shoeRepository.save(shoe);
         }
+        
         //Creamos pedido
         Order order = new Order();
         order.setUserId(userId);
         order.setDate(Instant.now());
         order.setStatus(OrderStatus.PENDIENTE); //Automáticamente asignamos el pedido como PENDIENTE
         order.setItems(orderItems);
+
+        //Creamos detalles del pedido
+        OrderDetails orderDetails = new OrderDetails();
+        //Obtenemos usuario para asignar la dirección
+        User user = userRepository.findById(order.getUserId()).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        orderDetails.setAddress(user.getAddress());
+        //Asignamos tiempo aproximado de envío
+        orderDetails.setDeliverDate(Instant.now().plusMillis(this.shippingTime));
+        orderDetails.setShippingPrice(this.shippingPrice);
+        BigDecimal price = BigDecimal.ZERO;
+        //Creamos precio total
+        for (OrderItem item : order.getItems()) {
+            price = price.add(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+        //Asignamos sumándole el precio del coste de envío
+        orderDetails.setTotalPrice(price.add(this.shippingPrice));
+
+        //Asignamos los details al pedido
+        order.setOrderDetails(orderDetails);
+
+        //Persistimos
         orderRepository.save(order);
 
         cartRepository.deleteByUserId(userId); //Eliminamos el carrito del usuario, pues ya hizo el pedido
