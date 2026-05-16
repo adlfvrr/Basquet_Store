@@ -30,7 +30,7 @@ public class CartController {
      */
 
     @GetMapping
-    public ResponseEntity<CartResponse> getCart(Principal principal){
+    public ResponseEntity<CartResponse> getCart(Principal principal) {
 
         String email = principal.getName();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
@@ -39,7 +39,7 @@ public class CartController {
     }
 
     @PostMapping("/items")
-    public ResponseEntity<CartResponse> addItem(Principal principal, @Valid @RequestBody AddToCartRequest request){
+    public ResponseEntity<CartResponse> addItem(Principal principal, @Valid @RequestBody AddToCartRequest request) {
         //Podríamos hacer un método del controlador para evitarnos este paso, pero como es nuevo, por ahora hagamoslo así.
         User user = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         return ResponseEntity.ok(cartService.addItem(user.getId(), request));
@@ -50,7 +50,7 @@ public class CartController {
     public ResponseEntity<CartResponse> updateitemQuantity(Principal principal,
                                                            @PathVariable String shoeId,
                                                            @PathVariable int size,
-                                                           @Valid @RequestBody UpdateCartItemRequest request){
+                                                           @Valid @RequestBody UpdateCartItemRequest request) {
 
         User user = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         return ResponseEntity.ok(cartService.updateItemQuantity(user.getId(), shoeId, size, request));

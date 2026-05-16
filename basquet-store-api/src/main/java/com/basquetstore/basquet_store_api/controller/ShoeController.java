@@ -1,12 +1,15 @@
 package com.basquetstore.basquet_store_api.controller;
 
+import com.basquetstore.basquet_store_api.dto.request.AddShoeRequest;
 import com.basquetstore.basquet_store_api.dto.response.ShoeResponse;
 import com.basquetstore.basquet_store_api.service.ShoeService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,14 +26,14 @@ public class ShoeController {
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) Integer size,
             @PageableDefault(size = 4)
-            Pageable pageable){
+            Pageable pageable) {
 
-            if(brand != null) {
-                String brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
-                return ResponseEntity.ok(shoeService.findAll(brandCapitalize, size, pageable));
+        if (brand != null) {
+            String brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
+            return ResponseEntity.ok(shoeService.findAll(brandCapitalize, size, pageable));
 
-            }
-            return ResponseEntity.ok(shoeService.findAll(brand, size, pageable));
+        }
+        return ResponseEntity.ok(shoeService.findAll(brand, size, pageable));
 
         /*
         Funcionamiento:
@@ -45,8 +48,14 @@ public class ShoeController {
     }
 
     @GetMapping("/id")
-    public ResponseEntity<ShoeResponse> getShoe(@PathVariable String id){
+    public ResponseEntity<ShoeResponse> getShoe(@PathVariable String id) {
         return ResponseEntity.ok(shoeService.findById(id));
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ShoeResponse> addShoe(@Valid @RequestBody AddShoeRequest request) {
+        return ResponseEntity.ok(shoeService.addShoe(request));
     }
 
 }

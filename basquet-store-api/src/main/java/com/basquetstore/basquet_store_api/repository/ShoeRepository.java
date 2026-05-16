@@ -18,4 +18,8 @@ public interface ShoeRepository extends MongoRepository<Shoe, String> {
     // Filtro combinado: marca y talle
     @Query("{ 'brand' : ?0, 'variants.size' : ?1 }")
     Page<Shoe> findByBrandAndSize(String brand, int size, Pageable pageable);
+
+    // Agregamos un método que mongodb autoimplementa para saber si una shoe existe a partir de la marca y modelo, asi evitamos duplicados
+    boolean existsByBrandAndModel(String brand, String model);
+
 }

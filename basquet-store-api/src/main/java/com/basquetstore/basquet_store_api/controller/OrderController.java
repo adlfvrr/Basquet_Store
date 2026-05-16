@@ -66,12 +66,12 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getOrder(@PathVariable String id, Principal principal){
+    public ResponseEntity<OrderResponse> getOrder(@PathVariable String id, Principal principal) {
         OrderResponse order = orderService.findById(getUserIdOptional(principal), id);
         //Lo mismo que antes, solo que ahora es para buscar un pedido en particular.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")) &&
-        !order.getUserId().equals(getUserIdPrincipal(principal))){
+                !order.getUserId().equals(getUserIdPrincipal(principal))) {
             throw new ResourceNotFoundException("Pedido no encontrado");
         }
         return ResponseEntity.ok(order);
