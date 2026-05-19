@@ -9,7 +9,6 @@ import com.basquetstore.basquet_store_api.repository.UserRepository;
 import com.basquetstore.basquet_store_api.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

@@ -25,7 +25,7 @@ public class ShoeController {
     public ResponseEntity<Page<ShoeResponse>> listShoes(
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) Integer size,
-            @PageableDefault(size = 4)
+            @PageableDefault(size = 6)
             Pageable pageable) {
 
         if (brand != null) {
