@@ -25,15 +25,26 @@ public class ShoeController {
     public ResponseEntity<Page<ShoeResponse>> listShoes(
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String shoeType,
             @PageableDefault(size = 6)
             Pageable pageable) {
 
-        if (brand != null) {
-            String brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
-            return ResponseEntity.ok(shoeService.findAll(brandCapitalize, size, pageable));
+        /*
+         Es necesario para el funcionamiento correcto del filtrado la correcta utilización de mayúsculas de la marca y el tipo de calzado
+         Por lo tanto, si la marca y el tipo son nulos, no ocurrirán excepciones, pues eso está controlado en el servicio, no pasa nada si se inicializan asi.
+         En cambio, si no son nulos, debemos filtrar según figuren las zapatillas en nuestra BDD (Marca comienza con Mayús y tipo es la palabra en Mayús).
+         */
 
+        String brandCapitalize = null;
+        String shoeTypeCapitalized = null;
+        if (brand != null) {
+            brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
         }
-        return ResponseEntity.ok(shoeService.findAll(brand, size, pageable));
+        if (shoeType != null) {
+            shoeTypeCapitalized = shoeType.toUpperCase();
+        }
+
+        return ResponseEntity.ok(shoeService.findAll(brandCapitalize, size, shoeTypeCapitalized, pageable));
 
         /*
         Funcionamiento:

@@ -1,8 +1,6 @@
 package com.basquetstore.basquet_store_api.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,6 +23,8 @@ public class Shoe {
     private String model;
     @Field("description")
     private String description;
+    @Field("shoeType")
+    private String shoeType;
     @Field("price")
     private BigDecimal price;
     @Field("imageURL")
@@ -35,12 +35,13 @@ public class Shoe {
     public Shoe() {
     }
 
-    public Shoe(String brand, String model, String description, BigDecimal price, String imageUrl, List<SizeVariant> variants) {
+    public Shoe(String brand, String model, String description, String shoeType, BigDecimal price, String imageUrl, List<SizeVariant> variants) {
         this.brand = brand;
         this.model = model;
         this.description = description;
         this.price = price;
         this.imageUrl = imageUrl;
         this.variants = variants;
+        this.shoeType = shoeType;
     }
 }

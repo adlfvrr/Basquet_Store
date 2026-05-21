@@ -29,7 +29,8 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (shoeRepository.count() == 0) {
-            loadShoes();
+            loadShoesGeneral();
+            loadShoesKids();
         }
         if (userRepository.count() == 0) {
             loadUsers();
@@ -38,7 +39,7 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Cantidad de shoes: " + shoeRepository.count());
     }
 
-    private void loadShoes() {
+    private void loadShoesGeneral() {
         String[][] marcasModelos = {
                 // Nike
                 {"Nike", "Kyrie Flytrap 6"},
@@ -82,10 +83,60 @@ public class DataLoader implements CommandLineRunner {
                 variants.add(new SizeVariant(size, stock));
             }
 
-            Shoe shoe = new Shoe(brand, model, "Zapatilla " + model + " - " + brand, price, "https://placehold.co/400x400?text=" + model.replace(" ", "+"), variants);
+            Shoe shoe = new Shoe(brand, model, "Zapatilla " + model + " - " + brand, "GENERAL", price, "https://placehold.co/400x400?text=" + model.replace(" ", "+"), variants);
             shoeRepository.save(shoe);
         }
     }
+
+    private void loadShoesKids(){
+        String[][] kidsModels = {
+                // Nike
+                {"Nike", "Giannis Immortality 4"},
+                {"Nike", "Ja 3"},
+                {"Nike", "Sabrina 3"},
+                {"Nike", "LeBron Witness 9"},
+                // Adidas
+                {"Adidas", "Dame 10"},
+                {"Adidas", "Dame X"},
+                {"Adidas", "Own The Game 3.0"},
+                {"Adidas", "Initiation PS"},
+                // Puma
+                {"Puma", "MB.05 Voltage"},
+                {"Puma", "Scoot Zeros II GS"},
+                {"Puma", "MB.04 Lo Team"},
+                {"Puma", "Rebound V6 Lo"},
+                // Under Armour
+                {"Under Armour", "UA Jet '25"},
+                {"Under Armour", "Lockdown 7"},
+                {"Under Armour", "Curry 3Z 25"},
+                {"Under Armour", "Curry 12"}
+        };
+
+        // Precios entre 80 y 200 USD (BigDecimal)
+        BigDecimal[] kidsPrices = {
+                new BigDecimal("69.99"), new BigDecimal("72.99"), new BigDecimal("74.99"), new BigDecimal("69.99"),
+                new BigDecimal("70.00"), new BigDecimal("65.99"), new BigDecimal("54.99"), new BigDecimal("59.99"),
+                new BigDecimal("69.99"), new BigDecimal("64.99"), new BigDecimal("74.99"), new BigDecimal("49.99"),
+                new BigDecimal("54.99"), new BigDecimal("59.99"), new BigDecimal("69.99"), new BigDecimal("79.99")
+        };
+
+        for (int i = 0; i < kidsModels.length; i++) {
+            String brand = kidsModels[i][0];
+            String model = kidsModels[i][1];
+            BigDecimal price = kidsPrices[i];
+
+            // Variantes de talles 39 al 42 con stock aleatorio
+            List<SizeVariant> variants = new ArrayList<>();
+            for (int size = 36; size <= 39; size++) {
+                int stock = ThreadLocalRandom.current().nextInt(0, 11); // 0 a 10
+                variants.add(new SizeVariant(size, stock));
+            }
+
+            Shoe shoe = new Shoe(brand, model, "Zapatilla " + model + " - " + brand, "KIDS", price, "https://placehold.co/400x400?text=" + model.replace(" ", "+"), variants);
+            shoeRepository.save(shoe);
+        }
+    }
+
 
     private void loadUsers() {
         // Admin

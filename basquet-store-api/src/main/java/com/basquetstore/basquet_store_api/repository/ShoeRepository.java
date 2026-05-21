@@ -22,4 +22,17 @@ public interface ShoeRepository extends MongoRepository<Shoe, String> {
     // Agregamos un método que mongodb autoimplementa para saber si una shoe existe a partir de la marca y modelo, asi evitamos duplicados
     boolean existsByBrandAndModel(String brand, String model);
 
+    // Filtro para el tipo de zapatilla (general o KIDS)
+    Page<Shoe> findByShoeType(String shoeType, Pageable pageable);
+
+    //Filtro combinado por los 3
+    @Query("{ 'brand' : ?0, 'variants.size' : ?1, 'shoeType' : ?2}")
+    Page<Shoe> findByBrandAndSizeAndShoeType(String brand, int size, String shoeType, Pageable pageable);
+    //Filtros combinados con cada uno
+    @Query("{ 'brand' : ?0, 'shoeType' : ?1 }")
+    Page<Shoe> findByBrandAndShoeType(String brand, String shoeType, Pageable pageable);
+
+    @Query("{ 'variants.size' : ?0, 'shoeType' : ?1 }")
+    Page<Shoe> findBySizeAndShoeType(int size, String shoeType, Pageable pageable);
+
 }

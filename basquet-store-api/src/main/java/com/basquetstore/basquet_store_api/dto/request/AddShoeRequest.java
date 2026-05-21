@@ -26,6 +26,10 @@ public class AddShoeRequest {
     @NotBlank(message = "Campo obligatorio: descripción")
     private String description;
 
+    //Agregamos tipo de calzado al request
+    @NotBlank(message = "Campo obligatorio: tipo de calzado")
+    private String shoeType;
+
     private String imageUrl;
 
     @NotNull

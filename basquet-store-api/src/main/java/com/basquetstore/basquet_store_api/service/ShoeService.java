@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface ShoeService {
 
-    Page<ShoeResponse> findAll(String brand, Integer size, Pageable pageable);
+    //Agregamos el tipo de calzado para el correcto funcionamiento del controlador
+    Page<ShoeResponse> findAll(String brand, Integer size, String shoeType, Pageable pageable);
 
     ShoeResponse findById(String id);
 

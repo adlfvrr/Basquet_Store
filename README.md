@@ -76,11 +76,11 @@ El proyecto sigue una arquitectura en capas:
 - iFaustoo  – Frontend
 
 ## 🔮 Próximos pasos
-✔️- Incluir introducción de nuevos productos al catálogo por parte de un ADMIN. 
+✔️ Incluir introducción de nuevos productos al catálogo por parte de un ADMIN. 
 
-✔️- A la hora de realizar un pedido, devolver detalles de pedido (Dirección - Tiempo aprox de envío - Precio de envío - Precio total)
+✔️ A la hora de realizar un pedido, devolver detalles de pedido (Dirección - Tiempo aprox de envío - Precio de envío - Precio total)
 
-- Agregar tipo de zapatillas Kids, con talles del 31 - 34
+✔️ Agregar tipo de zapatillas Kids, con talles del 36 - 39, distinguiendo el calzado con calzado General(39-42) y Kids(36-39).
 - Agregar sección Indumentaria, con talles XS | S | M | L
 
 --- A LARGO PLAZO ---

@@ -9,7 +9,6 @@ import com.basquetstore.basquet_store_api.exception.BadRequestException;
 import com.basquetstore.basquet_store_api.exception.ResourceNotFoundException;
 import com.basquetstore.basquet_store_api.repository.ShoeRepository;
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,7 @@ public class ShoeServiceImpl implements ShoeService {
                 shoe.getBrand(),
                 shoe.getModel(),
                 shoe.getDescription(),
+                shoe.getShoeType(),
                 shoe.getPrice(),
                 shoe.getImageUrl(),
                 shoe.getVariants().stream()
@@ -41,17 +41,25 @@ public class ShoeServiceImpl implements ShoeService {
         );
     }
 
-    public Page<ShoeResponse> findAll(String brand, Integer size, Pageable pageable) {
+    public Page<ShoeResponse> findAll(String brand, Integer size, String shoeType, Pageable pageable) {
         Page<Shoe> shoePage;
-
         //Mediante estos condicionales, según los datos que se reciban de la ruta, se mostrarán de diferente manera las zapatillas
 
-        if (brand != null && size != null) {
+        //Agregamos el tipo de calzado para filtrar
+        if (brand != null && size != null && shoeType != null) {
+            shoePage = shoeRepository.findByBrandAndSizeAndShoeType(brand, size, shoeType, pageable);
+        } else if (brand != null && shoeType != null) {
+            shoePage = shoeRepository.findByBrandAndShoeType(brand, shoeType, pageable);
+        } else if (size != null && shoeType != null) {
+            shoePage = shoeRepository.findBySizeAndShoeType(size, shoeType, pageable);
+        } else if (size != null && brand != null) {
             shoePage = shoeRepository.findByBrandAndSize(brand, size, pageable);
         } else if (brand != null) {
             shoePage = shoeRepository.findByBrand(brand, pageable);
         } else if (size != null) {
             shoePage = shoeRepository.findBySize(size, pageable);
+        } else if (shoeType != null) {
+            shoePage = shoeRepository.findByShoeType(shoeType, pageable);
         } else {
             shoePage = shoeRepository.findAll(pageable);
         }
@@ -90,15 +98,27 @@ public class ShoeServiceImpl implements ShoeService {
         Shoe shoeFromRequest = new Shoe(shoeRequest.getBrand(),
                 shoeRequest.getModel(),
                 shoeRequest.getDescription(),
+                shoeRequest.getShoeType().toUpperCase(),
                 shoeRequest.getPrice(),
                 shoeRequest.getImageUrl(),
                 shoeRequest.getSizeVariants());
 
         //Verifico que los variants no tengan un talle menor a 39 o con stock negativo (stock 0 está permitido)
+        //Para evitar la aparición de errores, primero verificamos que tipo de calzado es, luego verificamos sus variants
         List<SizeVariant> sizeVariants = shoeFromRequest.getVariants();
-        for (SizeVariant variant : sizeVariants) {
-            if (variant.getSize() < 39 || variant.getStock() < 0) {
-                throw new BadRequestException("No se puede ingresar talles menores a 39 o con stock negativo");
+        if (shoeFromRequest.getShoeType().equalsIgnoreCase("GENERAL")) {
+            for (SizeVariant variant : sizeVariants) {
+                if (variant.getSize() < 39 || variant.getSize() > 42 || variant.getStock() < 0) {
+                    throw new BadRequestException("No se puede ingresar talles menores a 39/mayores a 42, o con stock negativo de calzado de tipo 'General'");
+                }
+            }
+        }
+        //Agregamos una verificación nueva con nuevas condiciones: Si es de tipo general o para niños
+        if (shoeFromRequest.getShoeType().equalsIgnoreCase("KIDS")) {
+            for (SizeVariant variant : sizeVariants) {
+                if (variant.getSize() < 36 || variant.getSize() > 39 || variant.getStock() < 0) {
+                    throw new BadRequestException("No se puede ingresar talles menores a 36/mayores a 39, o con stock negativo de calzado de tipo 'Kids'");
+                }
             }
         }
 
