@@ -67,7 +67,7 @@ public class ClothingServiceImpl implements ClothingService {
 
     @Override
     public ClothingResponse findById(String id) {
-        Clothing clothing = clothingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Zapatilla no encontrada con id: " + id));
+        Clothing clothing = clothingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Indumentaria no encontrada con id: " + id));
         return mapToResponse(clothing);
     }
 
@@ -82,7 +82,14 @@ public class ClothingServiceImpl implements ClothingService {
             throw new BadRequestException("La indumentaria ya existe");
         }
 
-        Clothing clothingFromRequest = new Clothing(clothingRequest.getBrand(), clothingRequest.getModel(), clothingRequest.getDescription(), clothingRequest.getSection().toUpperCase(), clothingRequest.getImageUrl(), clothingRequest.getPrice(), clothingRequest.getClothingVariants());
+        Clothing clothingFromRequest = new Clothing(clothingRequest.getBrand(),
+                                                    clothingRequest.getModel(),
+                                                    clothingRequest.getDescription(),
+                                                    clothingRequest.getSection().toUpperCase(),
+                                                    clothingRequest.getImageUrl(),
+                                                    clothingRequest.getPrice(),
+                                                    clothingRequest.getClothingVariants()
+                                                   );
 
 
         //Ahora, como estamos verificando indumentaria, solamente tendremos en cuenta talles desde XS a XL
