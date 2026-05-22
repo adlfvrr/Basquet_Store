@@ -8,17 +8,17 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @AllArgsConstructor
-@Getter
 @Setter
-public class ShoeResponse {
+@Getter
+public class ClothingResponse {
 
     private String id;
     private String brand;
     private String model;
     private String description;
-    private String shoeType; //Agregamos tipo de calzado al response
+    private String section;
     private BigDecimal price;
     private String imageUrl;
-    private List<ShoeVariantResponse> variants;
+    private List<ClothingVariantResponse> variants;
 
 }

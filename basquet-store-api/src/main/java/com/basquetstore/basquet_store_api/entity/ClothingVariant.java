@@ -7,11 +7,13 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Getter @Setter
-public class SizeVariant {
+@Getter
+@Setter
+public class ClothingVariant {
 
-    //SizeVariant permite guardar dentro de cada shoe su talle y stock de manera separada.
-    private int size;
+    //Es necesario crear otro Variant, ya que ahora el talle se distingue con letras (XS, S, M, etc)
+
+    private String size;
     private int stock;
 
 }

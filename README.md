@@ -81,7 +81,8 @@ El proyecto sigue una arquitectura en capas:
 ✔️ A la hora de realizar un pedido, devolver detalles de pedido (Dirección - Tiempo aprox de envío - Precio de envío - Precio total)
 
 ✔️ Agregar tipo de zapatillas Kids, con talles del 36 - 39, distinguiendo el calzado con calzado General(39-42) y Kids(36-39).
-- Agregar sección Indumentaria, con talles XS | S | M | L
+
+✔️ Agregar sección Indumentaria, con talles XS | S | M | L | XL
 
 --- A LARGO PLAZO ---
 - Integración con frontend independiente

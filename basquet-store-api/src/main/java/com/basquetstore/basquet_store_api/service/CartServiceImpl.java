@@ -7,7 +7,7 @@ import com.basquetstore.basquet_store_api.dto.response.CartResponse;
 import com.basquetstore.basquet_store_api.entity.Cart;
 import com.basquetstore.basquet_store_api.entity.CartItem;
 import com.basquetstore.basquet_store_api.entity.Shoe;
-import com.basquetstore.basquet_store_api.entity.SizeVariant;
+import com.basquetstore.basquet_store_api.entity.ShoeVariant;
 import com.basquetstore.basquet_store_api.exception.BadRequestException;
 import com.basquetstore.basquet_store_api.exception.InsufficientStockException;
 import com.basquetstore.basquet_store_api.exception.ResourceNotFoundException;
@@ -65,7 +65,7 @@ public class CartServiceImpl implements CartService{
         Shoe shoe = shoeRepository.findById(request.getShoeId())
                 .orElseThrow(() -> new ResourceNotFoundException("La zapatilla no fue encontrada."));
         //Validamos existencia de talle
-        SizeVariant variant = shoe.getVariants().stream() //De la zapatilla, extraemos sus SizeVariant, para comprobar si hay stock y talle coincidentes
+        ShoeVariant variant = shoe.getVariants().stream() //De la zapatilla, extraemos sus SizeVariant, para comprobar si hay stock y talle coincidentes
                 .filter(v -> v.getSize() == request.getSize())
                 .findFirst()
                 .orElseThrow(() -> new InsufficientStockException("Stock de talle no encontrado."));

@@ -1,5 +1,6 @@
 package com.basquetstore.basquet_store_api.dto.request;
 
+import com.basquetstore.basquet_store_api.entity.ClothingVariant;
 import com.basquetstore.basquet_store_api.entity.ShoeVariant;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -14,11 +15,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Getter
 @Setter
-public class AddShoeRequest {
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class AddClothingRequest {
 
     @NotBlank(message = "Campo obligatorio: marca")
     private String brand;
@@ -26,9 +27,8 @@ public class AddShoeRequest {
     @NotBlank(message = "Campo obligatorio: descripción")
     private String description;
 
-    //Agregamos tipo de calzado al request
-    @NotBlank(message = "Campo obligatorio: tipo de calzado")
-    private String shoeType;
+    @NotBlank(message = "Campo obligatorio: sección")
+    private String section;
 
     private String imageUrl;
 
@@ -40,6 +40,6 @@ public class AddShoeRequest {
     private String model;
 
     @NotEmpty(message = "Debe contener al menos un talle")
-    private List<ShoeVariant> shoeVariants = new ArrayList<>();
+    private List<ClothingVariant> clothingVariants = new ArrayList<>();
 
 }

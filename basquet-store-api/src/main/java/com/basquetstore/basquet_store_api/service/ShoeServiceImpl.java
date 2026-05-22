@@ -2,9 +2,9 @@ package com.basquetstore.basquet_store_api.service;
 
 import com.basquetstore.basquet_store_api.dto.request.AddShoeRequest;
 import com.basquetstore.basquet_store_api.dto.response.ShoeResponse;
-import com.basquetstore.basquet_store_api.dto.response.SizeVariantResponse;
+import com.basquetstore.basquet_store_api.dto.response.ShoeVariantResponse;
 import com.basquetstore.basquet_store_api.entity.Shoe;
-import com.basquetstore.basquet_store_api.entity.SizeVariant;
+import com.basquetstore.basquet_store_api.entity.ShoeVariant;
 import com.basquetstore.basquet_store_api.exception.BadRequestException;
 import com.basquetstore.basquet_store_api.exception.ResourceNotFoundException;
 import com.basquetstore.basquet_store_api.repository.ShoeRepository;
@@ -36,7 +36,7 @@ public class ShoeServiceImpl implements ShoeService {
                 shoe.getPrice(),
                 shoe.getImageUrl(),
                 shoe.getVariants().stream()
-                        .map(v -> new SizeVariantResponse(v.getSize(), v.getStock()))
+                        .map(v -> new ShoeVariantResponse(v.getSize(), v.getStock()))
                         .collect(Collectors.toList())
         );
     }
@@ -101,23 +101,29 @@ public class ShoeServiceImpl implements ShoeService {
                 shoeRequest.getShoeType().toUpperCase(),
                 shoeRequest.getPrice(),
                 shoeRequest.getImageUrl(),
-                shoeRequest.getSizeVariants());
+                shoeRequest.getShoeVariants());
 
         //Verifico que los variants no tengan un talle menor a 39 o con stock negativo (stock 0 está permitido)
         //Para evitar la aparición de errores, primero verificamos que tipo de calzado es, luego verificamos sus variants
-        List<SizeVariant> sizeVariants = shoeFromRequest.getVariants();
+        List<ShoeVariant> shoeVariants = shoeFromRequest.getVariants();
         if (shoeFromRequest.getShoeType().equalsIgnoreCase("GENERAL")) {
-            for (SizeVariant variant : sizeVariants) {
-                if (variant.getSize() < 39 || variant.getSize() > 42 || variant.getStock() < 0) {
-                    throw new BadRequestException("No se puede ingresar talles menores a 39/mayores a 42, o con stock negativo de calzado de tipo 'General'");
+            for (ShoeVariant variant : shoeVariants) {
+                if (variant.getSize() < 39 || variant.getSize() > 42) {
+                    throw new BadRequestException("No se puede ingresar talles menores a 39/mayores a 42 de calzado de tipo 'General'");
+                }
+                if(variant.getStock() < 0){
+                    throw new BadRequestException("El stock no puede ser negativo (minimo 0)");
                 }
             }
         }
         //Agregamos una verificación nueva con nuevas condiciones: Si es de tipo general o para niños
         if (shoeFromRequest.getShoeType().equalsIgnoreCase("KIDS")) {
-            for (SizeVariant variant : sizeVariants) {
-                if (variant.getSize() < 36 || variant.getSize() > 39 || variant.getStock() < 0) {
-                    throw new BadRequestException("No se puede ingresar talles menores a 36/mayores a 39, o con stock negativo de calzado de tipo 'Kids'");
+            for (ShoeVariant variant : shoeVariants) {
+                if (variant.getSize() < 36 || variant.getSize() > 39) {
+                    throw new BadRequestException("No se puede ingresar talles menores a 36/mayores a 39 de calzado de tipo 'Kids'");
+                }
+                if(variant.getStock() < 0){
+                    throw new BadRequestException("El stock no puede ser negativo (minimo 0)");
                 }
             }
         }

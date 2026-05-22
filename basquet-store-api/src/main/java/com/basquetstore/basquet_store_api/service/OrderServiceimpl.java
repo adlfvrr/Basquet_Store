@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,7 +96,7 @@ public class OrderServiceimpl implements OrderService {
             Shoe shoe = shoeRepository.findById(cartItem.getShoeId()) //Buscamos el objeto zapatilla dentro de la bdd
                     .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado."));
 
-            SizeVariant variant = shoe.getVariants().stream()//Extraemos los SizeVariant de la misma
+            ShoeVariant variant = shoe.getVariants().stream()//Extraemos los SizeVariant de la misma
                     .filter(v -> v.getSize() == cartItem.getSize()) //Buscamos el talle solicitado
                     .findFirst()
                     .orElseThrow(() -> new InsufficientStockException("Talle sin stock."));
