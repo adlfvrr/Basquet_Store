@@ -25,18 +25,21 @@ public class ClothingController {
     private final ClothingService clothingService;
 
     @GetMapping
-    public ResponseEntity<Page<ClothingResponse>> listClothing(@RequestParam(required = false) String brand, @RequestParam(required = false) String size, @RequestParam(required = false) String section, @PageableDefault(size = 6) Pageable pageable) {
+    public ResponseEntity<Page<ClothingResponse>> listClothing(@RequestParam(required = false) String brand,
+                                                               @RequestParam(required = false) String size,
+                                                               @RequestParam(required = false) String section,
+                                                               @PageableDefault(size = 6) Pageable pageable) {
 
         String brandCapitalize = null;
-        String shoeTypeCapitalized = null;
+        String sectionCapitalized = null;
         if (brand != null) {
             brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
         }
         if (section != null) {
-            shoeTypeCapitalized = section.toUpperCase();
+            sectionCapitalized = section.toUpperCase();
         }
 
-        return ResponseEntity.ok(clothingService.findAll(brandCapitalize, size, shoeTypeCapitalized, pageable));
+        return ResponseEntity.ok(clothingService.findAll(brandCapitalize, size, sectionCapitalized, pageable));
 
     }
 
