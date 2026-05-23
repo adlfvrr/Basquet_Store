@@ -57,13 +57,10 @@ El proyecto sigue una arquitectura en capas:
 | GET | /api/orders | Listar pedidos (filtro por estado) | USER/ADMIN |
 | PUT | /api/orders/{id}/status | Cambiar estado de pedido | ADMIN |
 | POST | /api/shoes | Agregar nuevas zapatillas al catálogo | ADMIN | 
-
- - NUEVAS FUNCIONALIDADES
+|NUEVAS FUNCIONALIDADES| | | | 
 | GET | /api/clothing?brand=&size=&section&page= | Ver lista de indumentaria (paginado, filtrable) | Público | 
 | POST | /api/cart/clothing/items | Agregado de indumentaria al carrito | USER | 
 | POST | /api/clothing | Agregar nueva indumentaria al catálogo | ADMIN | 
-
-
 
 
 ## 🔧 Configuración y ejecución
