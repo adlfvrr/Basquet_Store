@@ -5,13 +5,17 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@RequiredArgsConstructor
-@Getter @Setter
-public class CartItem {
+import java.math.BigDecimal;
 
-    private String shoeId;
-    private int size;
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class ClothingOrderItem {
+
+    private String clothingId;
+    private String size;
     private int quantity;
+    private BigDecimal unitPrice;
 
 }

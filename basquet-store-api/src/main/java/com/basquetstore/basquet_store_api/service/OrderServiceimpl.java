@@ -1,18 +1,16 @@
 package com.basquetstore.basquet_store_api.service;
 
 import com.basquetstore.basquet_store_api.dto.request.UpdateOrderStatusRequest;
+import com.basquetstore.basquet_store_api.dto.response.OrderClothingItemResponse;
 import com.basquetstore.basquet_store_api.dto.response.OrderDetailsResponse;
-import com.basquetstore.basquet_store_api.dto.response.OrderItemResponse;
+import com.basquetstore.basquet_store_api.dto.response.OrderShoeItemResponse;
 import com.basquetstore.basquet_store_api.dto.response.OrderResponse;
 import com.basquetstore.basquet_store_api.entity.*;
 import com.basquetstore.basquet_store_api.exception.BadRequestException;
 import com.basquetstore.basquet_store_api.exception.InsufficientStockException;
 import com.basquetstore.basquet_store_api.exception.ResourceNotFoundException;
 import com.basquetstore.basquet_store_api.exception.StatusUpdateException;
-import com.basquetstore.basquet_store_api.repository.CartRepository;
-import com.basquetstore.basquet_store_api.repository.OrderRepository;
-import com.basquetstore.basquet_store_api.repository.ShoeRepository;
-import com.basquetstore.basquet_store_api.repository.UserRepository;
+import com.basquetstore.basquet_store_api.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +34,8 @@ public class OrderServiceimpl implements OrderService {
     private final ShoeRepository shoeRepository;
     //Agregamos repositorio de usuario para acceder a sus datos para el armado de pedidos
     private final UserRepository userRepository;
+    //Agregamos repositorio de indumentaria para trabajar con la misma
+    private final ClothingRepository clothingRepository;
 
     //Por el momento, el precio de envío y tiempo aproximado (7 dias) estarán puestos por default
     private final Long shippingTime = 604800000L;
@@ -43,7 +43,7 @@ public class OrderServiceimpl implements OrderService {
 
     //Método auxiliar
     private void returnStock(Order order) {
-        for (OrderItem item : order.getItems()) {
+        for (ShoeOrderItem item : order.getShoeItems()) {
             Shoe shoe = shoeRepository.findById(item.getShoeId()).orElse(null);
             if (shoe != null) {
                 shoe.getVariants().stream()
@@ -51,6 +51,16 @@ public class OrderServiceimpl implements OrderService {
                         .findFirst()
                         .ifPresent(v -> v.setStock(v.getStock() + item.getQuantity()));
                 shoeRepository.save(shoe);
+            }
+        }
+        for (ClothingOrderItem item : order.getClothingItems()) {
+            Clothing clothing = clothingRepository.findById(item.getClothingId()).orElse(null);
+            if (clothing != null) {
+                clothing.getVariants().stream()
+                        .filter(v -> v.getSize().equalsIgnoreCase(item.getSize()))
+                        .findFirst()
+                        .ifPresent(v -> v.setStock(v.getStock() + item.getQuantity()));
+                clothingRepository.save(clothing);
             }
         }
     }
@@ -71,8 +81,18 @@ public class OrderServiceimpl implements OrderService {
                 order.getUserId(),
                 order.getDate(),
                 order.getStatus(),
-                order.getItems().stream()
-                        .map(item -> new OrderItemResponse(item.getShoeId(), item.getSize(), item.getQuantity(), item.getUnitPrice()))
+                order.getShoeItems().stream()
+                        .map(item -> new OrderShoeItemResponse(item.getShoeId(),
+                                item.getSize(),
+                                item.getQuantity(),
+                                item.getUnitPrice()))
+                        .collect(Collectors.toList()),
+                //Ahora lo mismo con los items de indumentaria
+                order.getClothingItems().stream()
+                        .map(item -> new OrderClothingItemResponse(item.getClothingId(),
+                                item.getSize(),
+                                item.getQuantity(),
+                                item.getUnitPrice()))
                         .collect(Collectors.toList()),
                 //Asignamos el orderDetails
                 detailsResponse
@@ -86,45 +106,73 @@ public class OrderServiceimpl implements OrderService {
         //Creamos el carrito y verificamos que no esté vacío
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new BadRequestException("El carrito se encuentra vacío."));
-        if (cart.getItems().isEmpty()) {
+        if (cart.getShoeItems().isEmpty() && cart.getClothingItems().isEmpty()) {
             throw new BadRequestException("El carrito se encuentra vacío.");
         }
 
         //Validamos stock
-        List<OrderItem> orderItems = new ArrayList<>();
-        for (CartItem cartItem : cart.getItems()) {
-            Shoe shoe = shoeRepository.findById(cartItem.getShoeId()) //Buscamos el objeto zapatilla dentro de la bdd
+        List<ShoeOrderItem> shoeOrderItems = new ArrayList<>();
+        for (ShoeCartItem shoeCartItem : cart.getShoeItems()) {
+            Shoe shoe = shoeRepository.findById(shoeCartItem.getShoeId()) //Buscamos el objeto zapatilla dentro de la bdd
                     .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado."));
 
             ShoeVariant variant = shoe.getVariants().stream()//Extraemos los SizeVariant de la misma
-                    .filter(v -> v.getSize() == cartItem.getSize()) //Buscamos el talle solicitado
+                    .filter(v -> v.getSize() == shoeCartItem.getSize()) //Buscamos el talle solicitado
                     .findFirst()
                     .orElseThrow(() -> new InsufficientStockException("Talle sin stock."));
 
-            if (variant.getStock() < cartItem.getQuantity()) { //Comprobamos que la cantidad deseada no supere el stock real
-                throw new InsufficientStockException("Stock insuficiente para " + shoe.getModel() + " talle: " + cartItem.getSize());
+            if (variant.getStock() < shoeCartItem.getQuantity()) { //Comprobamos que la cantidad deseada no supere el stock real
+                throw new InsufficientStockException("Stock insuficiente para " + shoe.getModel() + " talle: " + shoeCartItem.getSize());
             }
 
             //Descontamos el stock
-            variant.setStock(variant.getStock() - cartItem.getQuantity());
+            variant.setStock(variant.getStock() - shoeCartItem.getQuantity());
 
             //Creamos el OrderItem
-            OrderItem orderItem = new OrderItem();
-            orderItem.setShoeId(cartItem.getShoeId());
-            orderItem.setSize(cartItem.getSize());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setUnitPrice(shoe.getPrice());
-            orderItems.add(orderItem);
+            ShoeOrderItem shoeOrderItem = new ShoeOrderItem();
+            shoeOrderItem.setShoeId(shoeCartItem.getShoeId());
+            shoeOrderItem.setSize(shoeCartItem.getSize());
+            shoeOrderItem.setQuantity(shoeCartItem.getQuantity());
+            shoeOrderItem.setUnitPrice(shoe.getPrice());
+            shoeOrderItems.add(shoeOrderItem);
 
             shoeRepository.save(shoe);
         }
-        
+
+        //Ahora lo mismo, pero con los items de indumentaria
+        List<ClothingOrderItem> clothingOrderItems = new ArrayList<>();
+        for (ClothingCartItem clothingCartItem : cart.getClothingItems()) {
+            Clothing clothing = clothingRepository.findById(clothingCartItem.getClothingId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado."));
+
+            ClothingVariant variant = clothing.getVariants().stream()//Extraemos los SizeVariant de la misma
+                    .filter(v -> v.getSize().equalsIgnoreCase(clothingCartItem.getSize()))
+                    .findFirst()
+                    .orElseThrow(() -> new InsufficientStockException("Talle sin stock."));
+
+            if (variant.getStock() < clothingCartItem.getQuantity()) {
+                throw new InsufficientStockException("Stock insuficiente para " + clothing.getModel() + " talle: " + clothingCartItem.getSize());
+            }
+
+            variant.setStock(variant.getStock() - clothingCartItem.getQuantity());
+
+            ClothingOrderItem clothingOrderItem = new ClothingOrderItem();
+            clothingOrderItem.setClothingId(clothingCartItem.getClothingId());
+            clothingOrderItem.setSize(clothingCartItem.getSize());
+            clothingOrderItem.setQuantity(clothingCartItem.getQuantity());
+            clothingOrderItem.setUnitPrice(clothing.getPrice());
+            clothingOrderItems.add(clothingOrderItem);
+
+            clothingRepository.save(clothing);
+        }
+
         //Creamos pedido
         Order order = new Order();
         order.setUserId(userId);
         order.setDate(Instant.now());
         order.setStatus(OrderStatus.PENDIENTE); //Automáticamente asignamos el pedido como PENDIENTE
-        order.setItems(orderItems);
+        order.setShoeItems(shoeOrderItems);
+        order.setClothingItems(clothingOrderItems);
 
         //Creamos detalles del pedido
         OrderDetails orderDetails = new OrderDetails();
@@ -136,7 +184,11 @@ public class OrderServiceimpl implements OrderService {
         orderDetails.setShippingPrice(this.shippingPrice);
         BigDecimal price = BigDecimal.ZERO;
         //Creamos precio total
-        for (OrderItem item : order.getItems()) {
+        for (ShoeOrderItem item : order.getShoeItems()) {
+            price = price.add(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+        //Ahora con los de indumentaria
+        for(ClothingOrderItem item : order.getClothingItems()){
             price = price.add(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
         }
         //Asignamos sumándole el precio del coste de envío

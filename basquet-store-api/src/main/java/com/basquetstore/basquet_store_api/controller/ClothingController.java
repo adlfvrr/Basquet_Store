@@ -31,15 +31,19 @@ public class ClothingController {
                                                                @PageableDefault(size = 6) Pageable pageable) {
 
         String brandCapitalize = null;
-        String sectionCapitalized = null;
+        String sectionCapitalize = null;
+        String sizeCapitalize = null;
         if (brand != null) {
             brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
         }
         if (section != null) {
-            sectionCapitalized = section.toUpperCase();
+            sectionCapitalize = section.substring(0, 1).toUpperCase() + section.substring(1);
+        }
+        if(size != null){
+            sizeCapitalize = size.toUpperCase();
         }
 
-        return ResponseEntity.ok(clothingService.findAll(brandCapitalize, size, sectionCapitalized, pageable));
+        return ResponseEntity.ok(clothingService.findAll(brandCapitalize, sizeCapitalize, sectionCapitalize, pageable));
 
     }
 

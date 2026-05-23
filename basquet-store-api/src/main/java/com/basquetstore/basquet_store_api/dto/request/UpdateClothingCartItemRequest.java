@@ -10,7 +10,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class UpdateCartItemRequest {
+public class UpdateClothingCartItemRequest {
 
     @PositiveOrZero(message = "La cantidad debe ser 0 o mayor")
     private int quantity;

@@ -1,8 +1,6 @@
 package com.basquetstore.basquet_store_api.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,14 +17,17 @@ public class Cart {
     private String id;
     @Field("userId")
     private String userId;
-    @Field("items")
-    private List<CartItem> items = new ArrayList<>();
+    @Field("shoeItems")
+    private List<ShoeCartItem> shoeItems = new ArrayList<>();
+    @Field("clothingItems")
+    private List<ClothingCartItem> clothingItems = new ArrayList<>();
 
     public Cart(){}
 
-    public Cart(String userId, List<CartItem> items){
+    public Cart(String userId, List<ShoeCartItem> items, List<ClothingCartItem> clothingItems){
         this.userId = userId;
-        this.items = items;
+        this.shoeItems = items;
+        this.clothingItems = clothingItems;
     }
 
 }

@@ -1,8 +1,6 @@
 package com.basquetstore.basquet_store_api.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -24,18 +22,21 @@ public class Order {
     private Instant date;
     @Field("status")
     private OrderStatus status;
-    @Field("items")
-    private List<OrderItem> items = new ArrayList<>();
+    @Field("shoeItems")
+    private List<ShoeOrderItem> shoeItems = new ArrayList<>();
+    @Field("clothingItems")
+    private List<ClothingOrderItem> clothingItems = new ArrayList<>();
     @Field("details")
     private OrderDetails orderDetails; //Guardamos detalles del envío como dirección, precio, llegada aproximada del pedido, etc
 
     public Order(){}
 
-    public Order(String userId, Instant date, OrderStatus status, List<OrderItem> items, OrderDetails details){
+    public Order(String userId, Instant date, OrderStatus status, List<ShoeOrderItem> shoeItems, List<ClothingOrderItem> clothingItems, OrderDetails details){
         this.userId = userId;
         this.date = date;
         this.status = status;
-        this.items = items;
+        this.shoeItems = shoeItems;
+        this.clothingItems = clothingItems;
         this.orderDetails = details;
     }
 }

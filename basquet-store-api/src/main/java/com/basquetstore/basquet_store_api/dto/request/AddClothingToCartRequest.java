@@ -13,14 +13,13 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class AddToCartRequest {
+public class AddClothingToCartRequest {
 
     @NotBlank(message = "El ID del producto es obligatorio.")
-    private String shoeId;
+    private String clothingId;
 
-    @Min(value = 39, message = "Talle mínimo 39.")
-    @Max(value = 42, message = "Talle máximo 42.")
-    private int size;
+    @NotBlank(message = "El talle es obligatorio.")
+    private String size;
 
     @Positive(message = "La cantidad debe ser mayor a 0.")
     private int quantity;

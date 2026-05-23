@@ -1,9 +1,7 @@
 package com.basquetstore.basquet_store_api.config;
 
-import com.basquetstore.basquet_store_api.entity.Role;
-import com.basquetstore.basquet_store_api.entity.Shoe;
-import com.basquetstore.basquet_store_api.entity.ShoeVariant;
-import com.basquetstore.basquet_store_api.entity.User;
+import com.basquetstore.basquet_store_api.entity.*;
+import com.basquetstore.basquet_store_api.repository.ClothingRepository;
 import com.basquetstore.basquet_store_api.repository.ShoeRepository;
 import com.basquetstore.basquet_store_api.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -25,6 +23,8 @@ public class DataLoader implements CommandLineRunner {
     private final ShoeRepository shoeRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    //Agregamos repositorio de indumentaria
+    private final ClothingRepository clothingRepository;
 
     @Override
     public void run(String... args) {
@@ -35,8 +35,12 @@ public class DataLoader implements CommandLineRunner {
         if (userRepository.count() == 0) {
             loadUsers();
         }
+        if(clothingRepository.count() == 0){
+            loadClothing();
+        }
         System.out.println("Verificando datos...");
         System.out.println("Cantidad de shoes: " + shoeRepository.count());
+        System.out.println("Indumentaria: " + clothingRepository.count());
     }
 
     private void loadShoesGeneral() {
@@ -138,51 +142,56 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void loadClothing(){
+        //Creamos vector mezclado de marcas y modelos
         String[][] clothingBrandModelsSection = {
+                {"Puma", "Sport Crew Socks", "Socks"},
+                {"Nike", "Phenom Elite Shorts", "Shorts"},
+                {"Adidas", "Ultimate Boxer Briefs", "Underwear"},
+                {"Under Armour", "Tech 2.0 Tee", "Shirt"},
 
-                {"Nike", "Black Short Swoosh Man", "M"},
-                {"Nike", "Ja 3"},
-                {"Nike", "Sabrina 3"},
-                {"Nike", "LeBron Witness 9"},
+                {"Adidas", "Essential Cotton Trunks", "Underwear"},
+                {"Under Armour", "HeatGear Armour Tee", "Shirt"},
+                {"Nike", "Dri-FIT Flex Shorts", "Shorts"},
+                {"Puma", "Cushioned Crew Socks", "Socks"},
 
-                {"Adidas", "Dame 10"},
-                {"Adidas", "Dame X"},
-                {"Adidas", "Own The Game 3.0"},
-                {"Adidas", "Initiation PS"},
+                {"Under Armour", "ColdGear Mock Tee", "Shirt"},
+                {"Nike", "Pro Training Shorts", "Shorts"},
+                {"Adidas", "Cotton Stretch Trunks", "Underwear"},
+                {"Puma", "No-Show Socks", "Socks"},
 
-                {"Puma", "MB.05 Voltage"},
-                {"Puma", "Scoot Zeros II GS"},
-                {"Puma", "MB.04 Lo Team"},
-                {"Puma", "Rebound V6 Lo"},
-                
-                {"Under Armour", "UA Jet '25"},
-                {"Under Armour", "Lockdown 7"},
-                {"Under Armour", "Curry 3Z 25"},
-                {"Under Armour", "Curry 12"}
+                {"Nike", "Elite Mesh Shorts", "Shorts"},
+                {"Under Armour", "UA Tactical Tee", "Shirt"},
+                {"Adidas", "Performance Boxer Briefs", "Underwear"},
+                {"Puma", "Quarter Training Socks", "Socks"}
         };
 
         // Precios entre 80 y 200 USD (BigDecimal)
-        BigDecimal[] kidsPrices = {
-                new BigDecimal("69.99"), new BigDecimal("72.99"), new BigDecimal("74.99"), new BigDecimal("69.99"),
-                new BigDecimal("70.00"), new BigDecimal("65.99"), new BigDecimal("54.99"), new BigDecimal("59.99"),
-                new BigDecimal("69.99"), new BigDecimal("64.99"), new BigDecimal("74.99"), new BigDecimal("49.99"),
-                new BigDecimal("54.99"), new BigDecimal("59.99"), new BigDecimal("69.99"), new BigDecimal("79.99")
+        BigDecimal[] clothingPrices = {
+                new BigDecimal("54.99"), new BigDecimal("29.99"), new BigDecimal("17.99"),
+                new BigDecimal("44.99"), new BigDecimal("64.99"), new BigDecimal("34.99"),
+                new BigDecimal("19.99"), new BigDecimal("49.99"), new BigDecimal("59.99"),
+                new BigDecimal("27.99"), new BigDecimal("15.99"), new BigDecimal("39.99"),
+                new BigDecimal("69.99"), new BigDecimal("32.99"), new BigDecimal("21.99"),
+                new BigDecimal("54.99")
         };
 
-        for (int i = 0; i < kidsModels.length; i++) {
-            String brand = kidsModels[i][0];
-            String model = kidsModels[i][1];
-            BigDecimal price = kidsPrices[i];
+        for (int i = 0; i < clothingBrandModelsSection.length; i++) {
+            String brand = clothingBrandModelsSection[i][0];
+            String model = clothingBrandModelsSection[i][1];
+            //Agregamos sección
+            String section = clothingBrandModelsSection[i][2];
+            BigDecimal price = clothingPrices[i];
 
-            // Variantes de talles 39 al 42 con stock aleatorio
-            List<ShoeVariant> variants = new ArrayList<>();
-            for (int size = 36; size <= 39; size++) {
+            //Vector de talles
+            String[] sizes = {"XS", "S", "M", "L", "XL"};
+            List<ClothingVariant> variants = new ArrayList<>();
+            for (String size : sizes) {
                 int stock = ThreadLocalRandom.current().nextInt(0, 11); // 0 a 10
-                variants.add(new ShoeVariant(size, stock));
+                variants.add(new ClothingVariant(size, stock));
             }
 
-            Shoe shoe = new Shoe(brand, model, "Zapatilla " + model + " - " + brand, "KIDS", price, "https://placehold.co/400x400?text=" + model.replace(" ", "+"), variants);
-            shoeRepository.save(shoe);
+            Clothing clothing = new Clothing(brand, model, "Indumentaria " + model + " - " + brand, section, "https://placehold.co/400x400?text=" + model.replace(" ", "+"), price, variants);
+            clothingRepository.save(clothing);
         }
     }
 
