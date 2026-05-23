@@ -1,7 +1,5 @@
 package com.basquetstore.basquet_store_api.dto.request;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -14,6 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddClothingToCartRequest {
+
+    //Creamos el request para agregar indumentaria al carrito
 
     @NotBlank(message = "El ID del producto es obligatorio.")
     private String clothingId;

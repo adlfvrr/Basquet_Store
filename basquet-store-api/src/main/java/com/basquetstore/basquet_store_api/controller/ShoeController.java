@@ -38,11 +38,13 @@ public class ShoeController {
         String brandCapitalize = null;
         String shoeTypeCapitalized = null;
         if (brand != null) {
-            brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
+            brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1).toLowerCase();
         }
         if (shoeType != null) {
             shoeTypeCapitalized = shoeType.toUpperCase();
         }
+
+        //Capitalizamos la marca y el tipo de zapatillas para que los servicios trabajen de forma correcta
 
         return ResponseEntity.ok(shoeService.findAll(brandCapitalize, size, shoeTypeCapitalized, pageable));
 

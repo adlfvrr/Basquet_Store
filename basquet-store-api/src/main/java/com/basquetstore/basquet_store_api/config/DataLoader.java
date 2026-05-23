@@ -141,6 +141,8 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
+    //Agregamos ahora método para cargar indumentaria por default
+
     private void loadClothing(){
         //Creamos vector mezclado de marcas y modelos
         String[][] clothingBrandModelsSection = {
@@ -165,7 +167,6 @@ public class DataLoader implements CommandLineRunner {
                 {"Puma", "Quarter Training Socks", "Socks"}
         };
 
-        // Precios entre 80 y 200 USD (BigDecimal)
         BigDecimal[] clothingPrices = {
                 new BigDecimal("54.99"), new BigDecimal("29.99"), new BigDecimal("17.99"),
                 new BigDecimal("44.99"), new BigDecimal("64.99"), new BigDecimal("34.99"),

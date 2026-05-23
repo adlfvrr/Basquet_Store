@@ -53,6 +53,7 @@ public class OrderServiceimpl implements OrderService {
                 shoeRepository.save(shoe);
             }
         }
+        //Hacemos lo mismo para la indumentaria
         for (ClothingOrderItem item : order.getClothingItems()) {
             Clothing clothing = clothingRepository.findById(item.getClothingId()).orElse(null);
             if (clothing != null) {

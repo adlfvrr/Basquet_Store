@@ -149,17 +149,16 @@ public class CartServiceImpl implements CartService{
                 .findFirst()
                 .orElseThrow(() -> new InsufficientStockException("Stock de talle no encontrado."));
 
-        //Validamos que el producto a agregar NO SE ENCUENTRE ACTUALMENTE en el carrito
         Optional<ClothingCartItem> existingItem = cart.getClothingItems().stream()
                 .filter(item -> item.getClothingId().equals(request.getClothingId()) && item.getSize().equalsIgnoreCase(request.getSize()))
                 .findFirst();
 
-        if(existingItem.isPresent()){ //Si existe en el carrito, sumamos cantidad
+        if(existingItem.isPresent()){
             int newQuantity = existingItem.get().getQuantity() + request.getQuantity();
 
             existingItem.get().setQuantity(newQuantity);
         }
-        else{ //Si el producto no existe en el carrito, lo agregamos
+        else{
             ClothingCartItem newItem = new ClothingCartItem();
             newItem.setClothingId(request.getClothingId());
             newItem.setSize(request.getSize());
@@ -180,7 +179,6 @@ public class CartServiceImpl implements CartService{
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException("Item no encontrado en el carrito."));
 
-        //Si lo encuentra, comprobamos que el request tenga cantidad > 0. Si no, lo elimina
         if(request.getQuantity() == 0){
             cart.getClothingItems().remove(item);
         }

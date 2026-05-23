@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 @Setter
 public class OrderClothingItemResponse {
 
+    //Creamos los responses para los pedidos de indumentaria
+
     private String clothingId;
     private String size;
     private int quantity;

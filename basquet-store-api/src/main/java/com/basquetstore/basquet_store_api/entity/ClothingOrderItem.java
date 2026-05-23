@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @Setter
 public class ClothingOrderItem {
 
+    //Creamos, para trabajar los items de indumentaria, la clase que irá dentro de Order
+
     private String clothingId;
     private String size;
     private int quantity;

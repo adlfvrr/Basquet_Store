@@ -34,14 +34,16 @@ public class ClothingController {
         String sectionCapitalize = null;
         String sizeCapitalize = null;
         if (brand != null) {
-            brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1);
+            brandCapitalize = brand.substring(0, 1).toUpperCase() + brand.substring(1).toLowerCase();
         }
         if (section != null) {
-            sectionCapitalize = section.substring(0, 1).toUpperCase() + section.substring(1);
+            sectionCapitalize = section.substring(0, 1).toUpperCase() + section.substring(1).toLowerCase();
         }
         if(size != null){
             sizeCapitalize = size.toUpperCase();
         }
+
+        //Capitalizamos la marca, sección y talle (ahora son letras) para que trabaje correctamente con los servicios
 
         return ResponseEntity.ok(clothingService.findAll(brandCapitalize, sizeCapitalize, sectionCapitalize, pageable));
 

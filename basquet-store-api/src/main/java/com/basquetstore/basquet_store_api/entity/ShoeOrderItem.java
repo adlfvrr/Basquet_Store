@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 @Getter @Setter
 public class ShoeOrderItem {
 
+    //Cambiamos nombre para distinguir entre zapatillas e indumentarias
+
     private String shoeId;
     private int size;
     private int quantity;

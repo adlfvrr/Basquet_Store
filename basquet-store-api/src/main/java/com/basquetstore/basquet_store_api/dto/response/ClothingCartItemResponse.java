@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class ClothingCartItemResponse {
 
+    //Creamos el response del carrito para los items de indumentaria
+
     private String clothingId;
     private String size;
     private int quantity;
