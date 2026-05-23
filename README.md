@@ -58,6 +58,13 @@ El proyecto sigue una arquitectura en capas:
 | PUT | /api/orders/{id}/status | Cambiar estado de pedido | ADMIN |
 | POST | /api/shoes | Agregar nuevas zapatillas al catálogo | ADMIN | 
 
+ - NUEVAS FUNCIONALIDADES
+| GET | /api/clothing?brand=&size=&section&page= | Ver lista de indumentaria (paginado, filtrable) | Público | 
+| POST | /api/cart/clothing/items | Agregado de indumentaria al carrito | USER | 
+| POST | /api/clothing | Agregar nueva indumentaria al catálogo | ADMIN | 
+
+
+
 
 ## 🔧 Configuración y ejecución
 ### Requisitos previos
@@ -82,7 +89,7 @@ El proyecto sigue una arquitectura en capas:
 
 ✔️ Agregar tipo de zapatillas Kids, con talles del 36 - 39, distinguiendo el calzado con calzado General(39-42) y Kids(36-39).
 
-- Agregar sección Indumentaria, con talles XS | S | M | L | XL
+✔️ Agregar sección Indumentaria, con talles XS | S | M | L | XL
 
 --- A LARGO PLAZO ---
 - Integración con frontend independiente
