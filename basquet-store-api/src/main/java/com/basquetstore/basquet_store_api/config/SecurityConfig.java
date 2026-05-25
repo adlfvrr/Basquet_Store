@@ -1,6 +1,7 @@
 package com.basquetstore.basquet_store_api.config;
 
 import com.basquetstore.basquet_store_api.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.time.LocalDateTime;
 
 @Configuration
 @EnableMethodSecurity
@@ -43,6 +46,31 @@ public class SecurityConfig {
                         // Admin solo para ciertos endpoints (lo manejaremos con anotaciones en controladores)
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(((request, response, authException) -> {
+                            response.setContentType("application/json;charset_UTF-8");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write(String.format("""
+                                    {
+                                    "timestamp": "%s",
+                                    "status": 401,
+                                    "error": "Unauthorized",
+                                    "message": "Se requiere autenticacion para continuar"
+                                    }
+                                    """, LocalDateTime.now()));
+                        }))
+                        .accessDeniedHandler(((request, response, accessDeniedException) -> {
+                            response.setContentType("application/json;charset_UTF-8");
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.getWriter().write(String.format("""
+                                    {
+                                    "timestamp": "%s",
+                                    "status": 403,
+                                    "error": "Forbidden",
+                                    "message": "No tienes los permisos necesarios para continuar"
+                                    }
+                                    """, LocalDateTime.now()));
+                        })))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

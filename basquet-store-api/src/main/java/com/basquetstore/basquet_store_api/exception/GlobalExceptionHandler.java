@@ -1,6 +1,5 @@
 package com.basquetstore.basquet_store_api.exception;
 
-import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
