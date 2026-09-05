@@ -78,8 +78,7 @@ El proyecto sigue una arquitectura en capas:
 
 ## 👥 Autores
 - adlfvrr   – Backend & API
-- iFaustoo  – Frontend
-
+  
 ## 🔮 Próximos pasos
 ✔️ Incluir introducción de nuevos productos al catálogo por parte de un ADMIN. 
 
@@ -89,9 +88,6 @@ El proyecto sigue una arquitectura en capas:
 
 ✔️ Agregar sección Indumentaria, con talles XS | S | M | L | XL
 
---- A LARGO PLAZO ---
-- Integración con frontend independiente
-- Migración a .NET (previsto como práctica futura)
 ____________________________________________________
-Este repositorio lo voy a estar utilizando de manera conjunta para afianzar nuestros conocimientos con aplicaciones.
+Este repositorio quedará como un inicio dentro de mis proyectos Back-end.
 ____________________________________________________
